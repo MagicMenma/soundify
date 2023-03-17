@@ -6,13 +6,121 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/songsname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="serif"
+            android:padding="25dp"
+            android:text="Song's Name"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:textStyle="bold|italic"
+            tools:ignore="ExtraText" />
+
+        <ImageView
+            android:id="@+id/avatorImage"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_below="@+id/songsname"
+            android:src="@drawable/avatar"
+            tools:ignore="ImageContrastCheck" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="40dp"
+            >
+
+            <SeekBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/seek_bar"
+                android:backgroundTint="@color/black"
+
+                />
+
+            <TextView
+                android:id="@+id/current_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/seek_bar"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="0:00"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/total_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/seek_bar"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="20dp"
+                android:text="0:00"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+
+            <ImageButton
+                android:id="@+id/previous_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/total_time"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button_shape"
+                android:backgroundTint="@color/Side1"
+                android:padding="20dp"
+                app:srcCompat="@android:drawable/ic_media_previous" />
+
+            <ImageButton
+                android:id="@+id/next_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/total_time"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button_shape"
+                android:backgroundTint="@color/Side1"
+                android:padding="20dp"
+                app:srcCompat="@android:drawable/ic_media_next" />
+
+            <ImageButton
+                android:id="@+id/play_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/total_time"
+                android:layout_centerInParent="true"
+                android:background="@drawable/play_button_shape"
+                android:backgroundTint="@color/Main"
+                android:padding="40dp"
+                android:src="@android:drawable/ic_media_next" />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

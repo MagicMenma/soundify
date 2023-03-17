@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name = "songs">
+        <item> song1 </item>
+        <item> song2 </item>
+        <item> song3 </item>
+        <item> song4 </item>
+        <item> song5 </item>
+    </string-array>
+</resources>
