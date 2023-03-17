@@ -26,11 +26,12 @@
 
         <ImageView
             android:id="@+id/avatorImage"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_width="365dp"
+            android:layout_height="336dp"
             android:layout_below="@+id/songsname"
             android:src="@drawable/avatar"
-            tools:ignore="ImageContrastCheck" />
+            tools:ignore="ImageContrastCheck"
+            android:layout_centerHorizontal="true"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
