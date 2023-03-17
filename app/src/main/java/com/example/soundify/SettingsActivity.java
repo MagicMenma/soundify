@@ -96,7 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
                 storageDir
         );
 
-        // 保存文件路径以供稍后使用
+        // Save the file path for later use
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
@@ -105,7 +105,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            // 从文件中加载照片并设置为头像
+            // Load a photo from a file and set it as an avatar
             Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
             profileImage.setImageBitmap(bitmap);
         }
