@@ -80,7 +80,18 @@ public class SettingsActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 添加保存设置的代码
+                String userName = nameEditText.getText().toString();
+                String email = emailEditText.getText().toString();
+                Boolean lightMode = lightModeRadioButton.isChecked();
+                Boolean brightnessSwitchState = automaticSwitch.isChecked();
+
+                Intent intent = new Intent(SettingsActivity.this, MenuActivity.class);
+                intent.putExtra("USER_NAME", userName);
+                intent.putExtra("EMAIL", email);
+                intent.putExtra("LIGHT_MODE", lightMode);
+                intent.putExtra("BSS", brightnessSwitchState);
+
+                startActivity(intent);
             }
         });
     }
