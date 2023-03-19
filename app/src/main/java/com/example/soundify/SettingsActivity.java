@@ -35,9 +35,7 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText nameEditText;
     private EditText emailEditText;
     private RadioGroup brightnessRadioGroup;
-    private RadioButton lightModeRadioButton, darkModeRadioButton;
     private RadioGroup autoRadioGroup;
-    private RadioButton noneAuto, autoMode, sameWithSystem;
     private Button saveButton;
     private String mCurrentPhotoPath;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -59,6 +57,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         nameEditText = findViewById(R.id.name_edittext);
         emailEditText = findViewById(R.id.email_edittext);
+
+        brightnessRadioGroup = findViewById(R.id.brightness_radiogroup);
+        autoRadioGroup = findViewById(R.id.autoRadiogroup);
 
         //Automatically select the default theme based on the theme set by the system
         int currentNightMode = getResources().getConfiguration().uiMode

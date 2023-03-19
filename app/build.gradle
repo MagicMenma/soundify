@@ -5,6 +5,7 @@ plugins {
 android {
     namespace 'com.example.soundify'
     compileSdk 33
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.example.soundify"
@@ -22,10 +23,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_16
-        targetCompatibility JavaVersion.VERSION_16
-    }
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_16
+//        targetCompatibility JavaVersion.VERSION_16
+//    }
 }
 
 dependencies {
