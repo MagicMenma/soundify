@@ -33,8 +33,8 @@ public class MenuActivity extends AppCompatActivity {
         String[] songs = getResources().getStringArray(R.array.songs);
 
         // set up adapter
-        adapter = new SongAdapter(songs);
-        songList.setAdapter(adapter);
+//        adapter = new SongAdapter(songs);
+//        songList.setAdapter(adapter);
 
         // 设置设置按钮的点击事件，跳转到settings activity
         settingsButton.setOnClickListener(new View.OnClickListener() {

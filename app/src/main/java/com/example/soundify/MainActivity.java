@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
 
         if(view.getId() == R.id.previous_button){
             System.out.println(trackNum);
+            Toast.makeText(this, "Previous", Toast.LENGTH_SHORT).show();
             trackNum-=1;
             if(trackNum == 0) trackNum = 5;
             mediaPlayer.release();
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
         }
         if(view.getId() == R.id.next_button){
             System.out.println(trackNum);
+            Toast.makeText(this, "Next", Toast.LENGTH_SHORT).show();
             trackNum+=1;
             if(trackNum == 5) trackNum = 1;
             mediaPlayer.release();
