@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MenuActivity extends AppCompatActivity {
 
     private RecyclerView songList;
-    private SongAdapter adapter;
     private ImageButton settingsButton;
 
     @Override
@@ -45,42 +44,6 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
-
-    public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
-
-        private String[] songs;
-
-        public static class ViewHolder extends RecyclerView.ViewHolder {
-            public TextView songName;
-
-            public ViewHolder(View itemView) {
-                super(itemView);
-                songName = itemView.findViewById(R.id.song_name);
-            }
-        }
-
-        public SongAdapter(String[] songs) {
-            this.songs = songs;
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.song_item, parent, false);
-            ViewHolder vh = new ViewHolder(v);
-            return vh;
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.songName.setText(songs[position]);
-        }
-
-        @Override
-        public int getItemCount() {
-            return songs.length;
-        }
     }
 
 }
