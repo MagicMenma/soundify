@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,30 +36,29 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText emailEditText;
     private RadioGroup brightnessRadioGroup;
     private RadioButton lightModeRadioButton, darkModeRadioButton;
-    private RadioGroup autoRadiogroup;
+    private RadioGroup autoRadioGroup;
     private RadioButton noneAuto, autoMode, sameWithSystem;
-    private Switch automaticSwitch;
     private Button saveButton;
     private String mCurrentPhotoPath;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    private static final String SHARED_PREFS = "sharedPrefs";
+    private static final String BRIGHTNESS_KEY = "brightness";
+    private static final String AUTO_MODE_KEY = "autoMode";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting);
 
+        loadSettings();
+
         profileImage = findViewById(R.id.profile_image);
         changeProfileButton = findViewById(R.id.change_profile_button);
+        saveButton = findViewById(R.id.save_button);
+
         nameEditText = findViewById(R.id.name_edittext);
         emailEditText = findViewById(R.id.email_edittext);
-        brightnessRadioGroup = findViewById(R.id.brightness_radiogroup);
-        lightModeRadioButton = findViewById(R.id.lightMode);
-        darkModeRadioButton = findViewById(R.id.darkMode);
-        autoRadiogroup = findViewById(R.id.autoRadiogroup);
-        noneAuto = findViewById(R.id.noneAuto);
-        autoMode = findViewById(R.id.autoMode);
-        sameWithSystem = findViewById(R.id.sameWithSystem);
-        saveButton = findViewById(R.id.save_button);
 
         //Automatically select the default theme based on the theme set by the system
         int currentNightMode = getResources().getConfiguration().uiMode
@@ -98,6 +98,8 @@ public class SettingsActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveSettings();
+
 //                String userName = nameEditText.getText().toString();
 //                String email = emailEditText.getText().toString();
 //                Boolean lightMode = lightModeRadioButton.isChecked();
@@ -111,9 +113,76 @@ public class SettingsActivity extends AppCompatActivity {
 //
 //                startActivity(intent);
 
-                
             }
         });
+    }
+
+    private void loadSettings() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        int brightnessValue = sharedPreferences.getInt(BRIGHTNESS_KEY, 0);
+        int autoModeValue = sharedPreferences.getInt(AUTO_MODE_KEY, 0);
+
+        // Set radio buttons to saved values
+        RadioButton lightModeRadioButton = findViewById(R.id.lightMode);
+        RadioButton darkModeRadioButton = findViewById(R.id.darkMode);
+
+        RadioButton noneAutoRadioButton = findViewById(R.id.noneAuto);
+        RadioButton autoModeRadioButton = findViewById(R.id.autoMode);
+        RadioButton sameWithSystemRadioButton = findViewById(R.id.sameWithSystem);
+
+        if (brightnessValue == 0) {
+            lightModeRadioButton.setChecked(true);
+        } else {
+            darkModeRadioButton.setChecked(true);
+        }
+
+        if (autoModeValue == 0) {
+            noneAutoRadioButton.setChecked(true);
+        } else if (autoModeValue == 1) {
+            autoModeRadioButton.setChecked(true);
+        } else {
+            sameWithSystemRadioButton.setChecked(true);
+        }
+    }
+
+    private void saveSettings() {
+        // Get selected radio buttons
+        int brightnessValue = brightnessRadioGroup.getCheckedRadioButtonId() == R.id.lightMode ? 0 : 1;
+        int autoModeValue = 0;
+        if (autoRadioGroup.getCheckedRadioButtonId() == R.id.autoMode) {
+            autoModeValue = 1;
+        } else if (autoRadioGroup.getCheckedRadioButtonId() == R.id.sameWithSystem) {
+            autoModeValue = 2;
+        }
+
+        // Save selected radio buttons
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(BRIGHTNESS_KEY, brightnessValue);
+        editor.putInt(AUTO_MODE_KEY, autoModeValue);
+        editor.apply();
+
+        // Apply settings
+        applySettings(brightnessValue, autoModeValue);
+
+        // Show saved message
+        Toast.makeText(this, "Settings Saved", Toast.LENGTH_SHORT).show();
+    }
+
+    private void applySettings(int brightnessValue, int autoModeValue) {
+        // Apply auto mode
+        if(autoModeValue == 0){
+            // Apply brightness setting
+            if (brightnessValue == 0) {
+                setTheme(R.style.AppTheme_Light);
+            } else {
+                setTheme(R.style.AppTheme_Dark);
+            }
+        }else if(autoModeValue == 1){
+
+        }else{
+
+        }
     }
 
     private File createImageFile() throws IOException {
