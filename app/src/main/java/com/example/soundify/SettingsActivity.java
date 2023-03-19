@@ -30,12 +30,16 @@ import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private int brightnessValue = 0, autoModeValue = 0;
     private ImageView profileImage;
     private Button changeProfileButton;
     private EditText nameEditText;
     private EditText emailEditText;
     private RadioGroup brightnessRadioGroup;
+    RadioButton lightModeRadioButton, darkModeRadioButton;
     private RadioGroup autoRadioGroup;
+    RadioButton noneAutoRadioButton, autoModeRadioButton, sameWithSystemRadioButton;
+
     private Button saveButton;
     private String mCurrentPhotoPath;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -44,12 +48,32 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String BRIGHTNESS_KEY = "brightness";
     private static final String AUTO_MODE_KEY = "autoMode";
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.setting);
+        brightnessRadioGroup = findViewById(R.id.brightness_radiogroup);
+        autoRadioGroup = findViewById(R.id.autoRadiogroup);
 
         loadSettings();
+        //if auto set as "Same With System" then,
+        if(autoModeValue == 2){
+            System.out.println("Problem 2");
+            int currentNightMode = getResources().getConfiguration().uiMode
+                    & Configuration.UI_MODE_NIGHT_MASK;
+            switch (currentNightMode) {
+                case Configuration.UI_MODE_NIGHT_NO:
+                    setTheme(R.style.AppTheme_Light);
+                    break;
+                case Configuration.UI_MODE_NIGHT_YES:
+                    setTheme(R.style.AppTheme_Dark);
+                    break;
+            }
+        }
+        setContentView(R.layout.setting);
 
         profileImage = findViewById(R.id.profile_image);
         changeProfileButton = findViewById(R.id.change_profile_button);
@@ -57,22 +81,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         nameEditText = findViewById(R.id.name_edittext);
         emailEditText = findViewById(R.id.email_edittext);
-
-        brightnessRadioGroup = findViewById(R.id.brightness_radiogroup);
-        autoRadioGroup = findViewById(R.id.autoRadiogroup);
-
-        //Automatically select the default theme based on the theme set by the system
-        int currentNightMode = getResources().getConfiguration().uiMode
-                & Configuration.UI_MODE_NIGHT_MASK;
-        switch (currentNightMode) {
-            case Configuration.UI_MODE_NIGHT_NO:
-                setTheme(R.style.AppTheme_Light);
-                break;
-            case Configuration.UI_MODE_NIGHT_YES:
-                setTheme(R.style.AppTheme_Dark);
-                break;
-        }
-        setContentView(R.layout.activity_main);
 
         changeProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,16 +128,22 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void loadSettings() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        int brightnessValue = sharedPreferences.getInt(BRIGHTNESS_KEY, 0);
-        int autoModeValue = sharedPreferences.getInt(AUTO_MODE_KEY, 0);
+        brightnessValue = sharedPreferences.getInt(BRIGHTNESS_KEY, 0);
+        autoModeValue = sharedPreferences.getInt(AUTO_MODE_KEY, 0);
 
         // Set radio buttons to saved values
-        RadioButton lightModeRadioButton = findViewById(R.id.lightMode);
-        RadioButton darkModeRadioButton = findViewById(R.id.darkMode);
+//        RadioButton lightModeRadioButton = findViewById(R.id.lightMode);
+//        RadioButton darkModeRadioButton = findViewById(R.id.darkMode);
+//
+//        RadioButton noneAutoRadioButton = findViewById(R.id.noneAuto);
+//        RadioButton autoModeRadioButton = findViewById(R.id.autoMode);
+//        RadioButton sameWithSystemRadioButton = findViewById(R.id.sameWithSystem);
+        lightModeRadioButton = findViewById(R.id.lightMode);
+        darkModeRadioButton = findViewById(R.id.darkMode);
 
-        RadioButton noneAutoRadioButton = findViewById(R.id.noneAuto);
-        RadioButton autoModeRadioButton = findViewById(R.id.autoMode);
-        RadioButton sameWithSystemRadioButton = findViewById(R.id.sameWithSystem);
+        noneAutoRadioButton = findViewById(R.id.noneAuto);
+        autoModeRadioButton = findViewById(R.id.autoMode);
+        sameWithSystemRadioButton = findViewById(R.id.sameWithSystem);
 
         if (brightnessValue == 0) {
             lightModeRadioButton.setChecked(true);
@@ -148,11 +162,21 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void saveSettings() {
         // Get selected radio buttons
-        int brightnessValue = brightnessRadioGroup.getCheckedRadioButtonId() == R.id.lightMode ? 0 : 1;
-        int autoModeValue = 0;
-        if (autoRadioGroup.getCheckedRadioButtonId() == R.id.autoMode) {
+        System.out.println(noneAutoRadioButton.isChecked());
+        System.out.println(autoModeRadioButton.isChecked());
+        System.out.println(sameWithSystemRadioButton.isChecked());
+        if(lightModeRadioButton.isChecked()){
+            brightnessValue = 0;
+        }else{
+            brightnessValue = 1;
+        }
+
+        if(noneAutoRadioButton.isChecked()){
+            autoModeValue = 0;
+        } else if (autoModeRadioButton.isChecked()) {
             autoModeValue = 1;
-        } else if (autoRadioGroup.getCheckedRadioButtonId() == R.id.sameWithSystem) {
+        } else if (sameWithSystemRadioButton.isChecked()) {
+            System.out.println("Problem 1");
             autoModeValue = 2;
         }
 
@@ -172,8 +196,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void applySettings(int brightnessValue, int autoModeValue) {
         // Apply auto mode
+        System.out.println(autoModeValue);
+        System.out.println(brightnessValue);
         if(autoModeValue == 0){
             // Apply brightness setting
+            System.out.println(autoModeValue);
             if (brightnessValue == 0) {
                 setTheme(R.style.AppTheme_Light);
             } else {
