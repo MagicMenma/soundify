@@ -1,6 +1,7 @@
 package com.example.soundify;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.FileProvider;
 
 import android.content.Intent;
@@ -8,6 +9,11 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -48,6 +54,9 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String BRIGHTNESS_KEY = "brightness";
     private static final String AUTO_MODE_KEY = "autoMode";
 
+    private SensorManager sensorManager;
+    private Sensor lightSensor;
+
 
 
     @Override
@@ -59,20 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
         autoRadioGroup = findViewById(R.id.autoRadiogroup);
 
         loadSettings();
-        //if auto set as "Same With System" then,
-        if(autoModeValue == 2){
-            System.out.println("Problem 2");
-            int currentNightMode = getResources().getConfiguration().uiMode
-                    & Configuration.UI_MODE_NIGHT_MASK;
-            switch (currentNightMode) {
-                case Configuration.UI_MODE_NIGHT_NO:
-                    setTheme(R.style.AppTheme_Light);
-                    break;
-                case Configuration.UI_MODE_NIGHT_YES:
-                    setTheme(R.style.AppTheme_Dark);
-                    break;
-            }
-        }
+
         setContentView(R.layout.setting);
 
         profileImage = findViewById(R.id.profile_image);
@@ -81,6 +77,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         nameEditText = findViewById(R.id.name_edittext);
         emailEditText = findViewById(R.id.email_edittext);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
         changeProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,20 +123,37 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
+
+        // Apply brightness by using light sensor
+        sensorManager.registerListener(new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                System.out.println("Light Sensor:" + event.values[0]);
+                if(autoModeRadioButton.isChecked()) {
+                    float light = event.values[0];
+                    if (light < 100) {
+                        // If the current brightness is less than 10, switch to dark mode
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                        recreate(); // recreate the Activity to apply new theme
+                    } else {
+                        // Else light mode
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        recreate(); // recreate the Activity to apply new theme
+                    }
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            }
+        }, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     private void loadSettings() {
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        brightnessValue = sharedPreferences.getInt(BRIGHTNESS_KEY, 0);
-        autoModeValue = sharedPreferences.getInt(AUTO_MODE_KEY, 0);
+        SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        brightnessValue = sharedPreferences.getInt("brightness", 0);
+        autoModeValue = sharedPreferences.getInt("autoMode", 0);
 
-        // Set radio buttons to saved values
-//        RadioButton lightModeRadioButton = findViewById(R.id.lightMode);
-//        RadioButton darkModeRadioButton = findViewById(R.id.darkMode);
-//
-//        RadioButton noneAutoRadioButton = findViewById(R.id.noneAuto);
-//        RadioButton autoModeRadioButton = findViewById(R.id.autoMode);
-//        RadioButton sameWithSystemRadioButton = findViewById(R.id.sameWithSystem);
         lightModeRadioButton = findViewById(R.id.lightMode);
         darkModeRadioButton = findViewById(R.id.darkMode);
 
@@ -181,17 +197,19 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         // Save selected radio buttons
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(BRIGHTNESS_KEY, brightnessValue);
-        editor.putInt(AUTO_MODE_KEY, autoModeValue);
+        editor.putInt("brightness", brightnessValue);
+        editor.putInt("autoMode", autoModeValue);
+        editor.putString("USER_NAME", nameEditText.getText().toString());
+        editor.putString("EMAIL", emailEditText.getText().toString());
         editor.apply();
 
         // Apply settings
         applySettings(brightnessValue, autoModeValue);
-
         // Show saved message
         Toast.makeText(this, "Settings Saved", Toast.LENGTH_SHORT).show();
+        recreate();
     }
 
     private void applySettings(int brightnessValue, int autoModeValue) {
@@ -199,17 +217,27 @@ public class SettingsActivity extends AppCompatActivity {
         System.out.println(autoModeValue);
         System.out.println(brightnessValue);
         if(autoModeValue == 0){
-            // Apply brightness setting
-            System.out.println(autoModeValue);
+            // Apply brightness setting directly
+            System.out.println(autoModeValue+"//"+brightnessValue);
             if (brightnessValue == 0) {
                 setTheme(R.style.AppTheme_Light);
             } else {
                 setTheme(R.style.AppTheme_Dark);
             }
-        }else if(autoModeValue == 1){
-
+        }else if(autoModeValue == 2){
+            // Apply brightness same with system
+            int currentNightMode = getResources().getConfiguration().uiMode
+                    & Configuration.UI_MODE_NIGHT_MASK;
+            switch (currentNightMode) {
+                case Configuration.UI_MODE_NIGHT_NO:
+                    setTheme(R.style.AppTheme_Light);
+                    break;
+                case Configuration.UI_MODE_NIGHT_YES:
+                    setTheme(R.style.AppTheme_Dark);
+                    break;
+            }
         }else{
-
+            // line 143 above
         }
     }
 
@@ -237,5 +265,9 @@ public class SettingsActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
             profileImage.setImageBitmap(bitmap);
         }
+    }
+
+    protected void onPause(){
+        super.onPause();
     }
 }
