@@ -45,7 +45,7 @@ public class SettingsActivity extends AppCompatActivity {
     RadioButton lightModeRadioButton, darkModeRadioButton;
     private RadioGroup autoRadioGroup;
     RadioButton noneAutoRadioButton, autoModeRadioButton, sameWithSystemRadioButton;
-
+    private Button backButton;
     private Button saveButton;
     private String mCurrentPhotoPath;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -73,6 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         profileImage = findViewById(R.id.profile_image);
         changeProfileButton = findViewById(R.id.change_profile_button);
+        backButton = findViewById(R.id.backButton);
         saveButton = findViewById(R.id.save_button);
 
         nameEditText = findViewById(R.id.name_edittext);
@@ -102,6 +103,13 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, MenuActivity.class);
+                startActivity(intent);
+            }
+        });
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
