@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,6 +55,8 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String BRIGHTNESS_KEY = "brightness";
     private static final String AUTO_MODE_KEY = "autoMode";
 
+    private boolean noneAuto, autoMode, sameWithSystem;
+
     private SensorManager sensorManager;
     private Sensor lightSensor;
 
@@ -66,10 +69,9 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.setting);
         brightnessRadioGroup = findViewById(R.id.brightness_radiogroup);
         autoRadioGroup = findViewById(R.id.autoRadiogroup);
+        autoRadioGroup.setOnCheckedChangeListener(autoRadioGroupListener);
 
         loadSettings();
-
-        setContentView(R.layout.setting);
 
         profileImage = findViewById(R.id.profile_image);
         changeProfileButton = findViewById(R.id.change_profile_button);
@@ -133,34 +135,63 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         // Apply brightness by using light sensor
-        sensorManager.registerListener(new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-                System.out.println("Light Sensor:" + event.values[0]);
-                if(autoModeRadioButton.isChecked()) {
-                    float light = event.values[0];
-                    if (light < 100) {
-                        // If the current brightness is less than 10, switch to dark mode
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                        recreate(); // recreate the Activity to apply new theme
-                    } else {
-                        // Else light mode
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                        recreate(); // recreate the Activity to apply new theme
-                    }
-                }
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            }
-        }, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+//        sensorManager.registerListener(new SensorEventListener() {
+//            @Override
+//            public void onSensorChanged(SensorEvent event) {
+//                System.out.println("Light Sensor:" + event.values[0]);
+//                if(autoModeRadioButton.isChecked()) {
+//                    float light = event.values[0];
+//                    if (light < 100) {
+//                        // If the current brightness is less than 10, switch to dark mode
+//                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//                        recreate(); // recreate the Activity to apply new theme
+//                    } else {
+//                        // Else light mode
+//                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//                        recreate(); // recreate the Activity to apply new theme
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+//            }
+//        }, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
+
+    RadioGroup.OnCheckedChangeListener autoRadioGroupListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            Log.d("RadioGroupListener", "someChanged");
+            switch (checkedId){
+                case R.id.noneAuto:
+                    noneAuto = true;
+                    autoMode = false;
+                    sameWithSystem = false;
+                    break;
+                case R.id.autoMode:
+                    noneAuto = false;
+                    autoMode = true;
+                    sameWithSystem = false;
+                    break;
+                case R.id.sameWithSystem:
+                    noneAuto = false;
+                    autoMode = false;
+                    sameWithSystem = true;
+                    break;
+            }
+            Log.d("RadioGroupListener", getResources().getResourceName(checkedId));
+        }
+    };
+
 
     private void loadSettings() {
         SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        brightnessValue = sharedPreferences.getInt("brightness", 0);
-        autoModeValue = sharedPreferences.getInt("autoMode", 0);
+        brightnessValue = sharedPreferences.getInt("brightness", 3);
+        autoModeValue = sharedPreferences.getInt("autoMode", 4);
+
+        System.out.println("Load brightnessValue as " + brightnessValue);
+        System.out.println("Load autoModeValue as " + autoModeValue);
 
         lightModeRadioButton = findViewById(R.id.lightMode);
         darkModeRadioButton = findViewById(R.id.darkMode);
@@ -186,20 +217,20 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void saveSettings() {
         // Get selected radio buttons
-        System.out.println(noneAutoRadioButton.isChecked());
-        System.out.println(autoModeRadioButton.isChecked());
-        System.out.println(sameWithSystemRadioButton.isChecked());
+        System.out.println(noneAuto);
+        System.out.println(autoMode);
+        System.out.println(sameWithSystem);
         if(lightModeRadioButton.isChecked()){
             brightnessValue = 0;
         }else{
             brightnessValue = 1;
         }
 
-        if(noneAutoRadioButton.isChecked()){
+        if(noneAuto){
             autoModeValue = 0;
-        } else if (autoModeRadioButton.isChecked()) {
+        } else if (autoMode) {
             autoModeValue = 1;
-        } else if (sameWithSystemRadioButton.isChecked()) {
+        } else if (sameWithSystem) {
             System.out.println("Problem 1");
             autoModeValue = 2;
         }
@@ -211,6 +242,7 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putInt("autoMode", autoModeValue);
         editor.putString("USER_NAME", nameEditText.getText().toString());
         editor.putString("EMAIL", emailEditText.getText().toString());
+        editor.commit();
         editor.apply();
 
         // Apply settings

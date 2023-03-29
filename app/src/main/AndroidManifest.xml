@@ -44,7 +44,7 @@
         <activity
             android:name=".MenuActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.Dark">
+            android:theme="@style/AppTheme.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -53,7 +53,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:theme="@style/AppTheme.Dark">
+            android:theme="@style/AppTheme.Light">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -61,7 +61,7 @@
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
-            android:theme="@style/AppTheme.Dark">
+            android:theme="@style/AppTheme.Light">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
