@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,18 +36,15 @@ public class MenuActivity extends AppCompatActivity {
     ArrayList<AudioModel> songsList = new ArrayList<>();
     private ImageButton settingsButton;
 
-    private int currentTheme,textSize;
+
+    private int brightnessValue, autoModeValue, textSizeValue;
 
     Button moreMusic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
-        currentTheme = intent.getIntExtra("CURRENT_THEME", 0);
-        textSize = intent.getIntExtra("TEXT_SIZE", 0);
-        System.out.println("current Theme: " + currentTheme);
-        System.out.println("text Size: " + textSize);
-        applySettings(currentTheme, textSize);
+        preLoadSettings();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu);
@@ -100,6 +98,57 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(browserIntent);
             }
         });
+    }
+
+    private void preLoadSettings(){
+        SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        brightnessValue = sharedPreferences.getInt("brightness", 0);
+        autoModeValue = sharedPreferences.getInt("autoMode", 0);
+        textSizeValue = sharedPreferences.getInt("textSize", 0);
+
+        if(autoModeValue == 0) {
+            // Apply brightness setting directly
+            if (brightnessValue == 0 && textSizeValue == 0) {
+                setTheme(R.style.AppTheme_Light_Reg);
+            } else if (brightnessValue == 0 && textSizeValue == 1) {
+                setTheme(R.style.AppTheme_Light_Large);
+            } else if (brightnessValue == 1 && textSizeValue == 0) {
+                setTheme(R.style.AppTheme_Dark_Reg);
+            } else if (brightnessValue == 1 && textSizeValue == 1) {
+                setTheme(R.style.AppTheme_Dark_Large);
+            }
+        }else if(autoModeValue == 1){
+            if (textSizeValue == 0){
+                setTheme(R.style.AppTheme_Light_Reg);
+            }else if (textSizeValue == 1) {
+                setTheme(R.style.AppTheme_Light_Large);
+            } else if (textSizeValue == 0) {
+                setTheme(R.style.AppTheme_Dark_Reg);
+            } else if (textSizeValue == 1) {
+                setTheme(R.style.AppTheme_Dark_Large);
+            }
+
+        }else if(autoModeValue == 2){
+            // Apply brightness same with system
+            int currentNightMode = getResources().getConfiguration().uiMode
+                    & Configuration.UI_MODE_NIGHT_MASK;
+            switch (currentNightMode) {
+                case Configuration.UI_MODE_NIGHT_NO:
+                    if(textSizeValue == 0){
+                        setTheme(R.style.AppTheme_Light_Reg);
+                    }else{
+                        setTheme(R.style.AppTheme_Light_Large);
+                    }
+                    break;
+                case Configuration.UI_MODE_NIGHT_YES:
+                    if(textSizeValue == 0){
+                        setTheme(R.style.AppTheme_Dark_Reg);
+                    }else{
+                        setTheme(R.style.AppTheme_Dark_Large);
+                    }
+                    break;
+            }
+        }
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.example.soundify;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
     AudioModel currentSong;
     MediaPlayer mediaPlayer = MyMediaPlayer.getInstance();
     ImageView avatorImage;
-    private int currentTheme,textSize;
+    private int brightnessValue, autoModeValue, textSizeValue;
     private int x = 0;
 
     boolean isPlaying = false;
@@ -41,12 +43,8 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
     //    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent intent = getIntent();
-        currentTheme = intent.getIntExtra("CURRENT_THEME", 0);
-        textSize = intent.getIntExtra("TEXT_SIZE", 0);
-        System.out.println("current Theme: " + currentTheme);
-        System.out.println("text Size: " + textSize);
-        applySettings(currentTheme, textSize);
+        preLoadSettings();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -107,21 +105,60 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
         });
     }
 
+    private void preLoadSettings(){
+        SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        brightnessValue = sharedPreferences.getInt("brightness", 0);
+        autoModeValue = sharedPreferences.getInt("autoMode", 0);
+        textSizeValue = sharedPreferences.getInt("textSize", 0);
+
+        if(autoModeValue == 0) {
+            // Apply brightness setting directly
+            if (brightnessValue == 0 && textSizeValue == 0) {
+                setTheme(R.style.AppTheme_Light_Reg);
+            } else if (brightnessValue == 0 && textSizeValue == 1) {
+                setTheme(R.style.AppTheme_Light_Large);
+            } else if (brightnessValue == 1 && textSizeValue == 0) {
+                setTheme(R.style.AppTheme_Dark_Reg);
+            } else if (brightnessValue == 1 && textSizeValue == 1) {
+                setTheme(R.style.AppTheme_Dark_Large);
+            }
+        }else if(autoModeValue == 1){
+            if (textSizeValue == 0){
+                setTheme(R.style.AppTheme_Light_Reg);
+            }else if (textSizeValue == 1) {
+                setTheme(R.style.AppTheme_Light_Large);
+            } else if (textSizeValue == 0) {
+                setTheme(R.style.AppTheme_Dark_Reg);
+            } else if (textSizeValue == 1) {
+                setTheme(R.style.AppTheme_Dark_Large);
+            }
+
+        }else if(autoModeValue == 2){
+            // Apply brightness same with system
+            int currentNightMode = getResources().getConfiguration().uiMode
+                    & Configuration.UI_MODE_NIGHT_MASK;
+            switch (currentNightMode) {
+                case Configuration.UI_MODE_NIGHT_NO:
+                    if(textSizeValue == 0){
+                        setTheme(R.style.AppTheme_Light_Reg);
+                    }else{
+                        setTheme(R.style.AppTheme_Light_Large);
+                    }
+                    break;
+                case Configuration.UI_MODE_NIGHT_YES:
+                    if(textSizeValue == 0){
+                        setTheme(R.style.AppTheme_Dark_Reg);
+                    }else{
+                        setTheme(R.style.AppTheme_Dark_Large);
+                    }
+                    break;
+            }
+        }
+    }
+
     @Override
     protected void onPause(){
         super.onPause();
-    }
-
-    private void applySettings(int currentTheme, int textSize){
-        if(currentTheme == 0 && textSize == 0){
-            setTheme(R.style.AppTheme_Light_Reg);
-        }else if(currentTheme == 0 && textSize == 1){
-            setTheme(R.style.AppTheme_Light_Large);
-        }else if(currentTheme == 1 && textSize == 0){
-            setTheme(R.style.AppTheme_Dark_Reg);
-        }else if(currentTheme == 1 && textSize == 1){
-            setTheme(R.style.AppTheme_Dark_Large);
-        }
     }
 
     private void setResourcesWithMusic(){

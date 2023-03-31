@@ -34,6 +34,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -57,8 +58,6 @@ public class SettingsActivity extends AppCompatActivity {
     RadioButton regularSizeRadioButton, largeSizeRadioButton;
     private Button backButton;
     private Button saveButton;
-    private String mCurrentPhotoPath;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private int currentTheme;
 
     private static final String SHARED_PREFS = "sharedPrefs";
@@ -70,6 +69,10 @@ public class SettingsActivity extends AppCompatActivity {
     private Sensor lightSensor;
 
     Uri image_uri;
+
+    DatabaseHelper DB;
+    String nameDB = "00008";
+    Bitmap imageDB;
 
 
 
@@ -102,6 +105,15 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         nameEditText.setText(sharedPreferences.getString("USER_NAME", "User_100234"));
         emailEditText.setText(sharedPreferences.getString("EMAIL", "soundify@gmail.com"));
+
+        //DB = new DatabaseHelper(this);
+
+        //Load Saved Image
+        String imageUriString = sharedPreferences.getString("imageURI", null);
+        if(imageUriString != null) {
+            Uri imageUri = Uri.parse(imageUriString);
+            profileImage.setImageURI(imageUri);
+        }
 
         changeProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -293,10 +305,27 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putInt("autoModeChanger", autoModeWillChangeTo);
         editor.putString("USER_NAME", nameEditText.getText().toString());
         editor.putString("EMAIL", emailEditText.getText().toString());
+        if(image_uri != null) {
+            editor.putString("imageURI", image_uri.toString());
+        }
         editor.commit();
         editor.apply();
 
-        // Show saved message
+//        //transfer img user took to Bitmap
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), image_uri.getPort());
+//        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArray);
+//        byte[] img = byteArray.toByteArray();
+//
+//        boolean insert = DB.insertdata(img);
+//        if(insert == true){
+//            // Show saved message
+//            Toast.makeText(this, "Settings and Image Saved", Toast.LENGTH_SHORT).show();
+//        }else{
+//            // Show saved message
+//            Toast.makeText(this, "Only Settings Saved", Toast.LENGTH_SHORT).show();
+//        }
+
         Toast.makeText(this, "Settings Saved", Toast.LENGTH_SHORT).show();
         recreate();
     }
