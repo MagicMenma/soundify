@@ -47,7 +47,7 @@ public class SettingsActivity extends AppCompatActivity {
     private RadioGroup autoRadioGroup;
     RadioButton noneAutoRadioButton, autoModeRadioButton, sameWithSystemRadioButton;
     private RadioGroup textSizeRadioGroup;
-    RadioButton regularSizeRadioButton, smallSizeRadioButton, largeSizeRadioButton;
+    RadioButton regularSizeRadioButton, largeSizeRadioButton;
     private Button backButton;
     private Button saveButton;
     private String mCurrentPhotoPath;
@@ -131,15 +131,23 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onSensorChanged(SensorEvent event) {
                 System.out.println("Light Sensor:" + event.values[0]);
-                if(autoModeRadioButton.isChecked()) {
+                if(autoModeValue == 1) {
                     float light = event.values[0];
-                    if (light < 100) {
-                        // If the current brightness is less than 10, switch to dark mode
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    if (light < 200) {
+                        // If the current brightness is less than 200, switch to dark mode
+                        if(textSizeValue == 0){
+                            setTheme(R.style.AppTheme_Dark_Reg);
+                        }else{
+                            setTheme(R.style.AppTheme_Dark_Large);
+                        }
                         recreate(); // recreate the Activity to apply new theme
                     } else {
                         // Else light mode
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        if(textSizeValue == 0){
+                            setTheme(R.style.AppTheme_Light_Reg);
+                        }else{
+                            setTheme(R.style.AppTheme_Light_Large);
+                        }
                         recreate(); // recreate the Activity to apply new theme
                     }
                 }
@@ -159,7 +167,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         System.out.println("Load brightnessValue as " + brightnessValue);
         System.out.println("Load autoModeValue as " + autoModeValue);
-        System.out.println("Load autoModeValue as " + textSizeValue);
+        System.out.println("Load textSizeValue as " + textSizeValue);
 
         lightModeRadioButton = findViewById(R.id.lightMode);
         darkModeRadioButton = findViewById(R.id.darkMode);
@@ -169,7 +177,6 @@ public class SettingsActivity extends AppCompatActivity {
         sameWithSystemRadioButton = findViewById(R.id.sameWithSystem);
 
         regularSizeRadioButton = findViewById(R.id.pt15);
-        smallSizeRadioButton = findViewById(R.id.pt10);
         largeSizeRadioButton = findViewById(R.id.pt20);
 
         if (brightnessValue == 0) {
@@ -189,8 +196,6 @@ public class SettingsActivity extends AppCompatActivity {
         if (textSizeValue == 0) {
             regularSizeRadioButton.setChecked(true);
         } else if (textSizeValue == 1) {
-            smallSizeRadioButton.setChecked(true);
-        } else {
             largeSizeRadioButton.setChecked(true);
         }
     }
@@ -206,21 +211,19 @@ public class SettingsActivity extends AppCompatActivity {
             brightnessValue = 1;
         }
 
-        if(noneAuto){
+        if(noneAutoRadioButton.isChecked()){
             autoModeValue = 0;
-        } else if (autoMode) {
+        } else if (autoModeRadioButton.isChecked()) {
             autoModeValue = 1;
-        } else if (sameWithSystem) {
+        } else if (sameWithSystemRadioButton.isChecked()) {
             System.out.println("Problem 1");
             autoModeValue = 2;
         }
 
         if(regularSizeRadioButton.isChecked()){
             textSizeValue = 0;
-        } else if (smallSizeRadioButton.isChecked()) {
-            textSizeValue = 1;
         } else if (largeSizeRadioButton.isChecked()) {
-            textSizeValue = 2;
+            textSizeValue = 1;
         }
 
         // Save selected radio buttons
@@ -228,30 +231,34 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("brightness", brightnessValue);
         editor.putInt("autoMode", autoModeValue);
-        editor.putInt("autoMode", autoModeValue);
+        editor.putInt("textSize", textSizeValue);
         editor.putString("USER_NAME", nameEditText.getText().toString());
         editor.putString("EMAIL", emailEditText.getText().toString());
         editor.commit();
         editor.apply();
 
         // Apply settings
-        applySettings(brightnessValue, autoModeValue);
+        applySettings(brightnessValue, autoModeValue, textSizeValue);
         // Show saved message
         Toast.makeText(this, "Settings Saved", Toast.LENGTH_SHORT).show();
         recreate();
     }
 
-    private void applySettings(int brightnessValue, int autoModeValue) {
+    private void applySettings(int brightnessValue, int autoModeValue, int textSizeValue) {
         // Apply auto mode
         System.out.println(autoModeValue);
         System.out.println(brightnessValue);
+        System.out.println(textSizeValue);
         if(autoModeValue == 0){
             // Apply brightness setting directly
-            System.out.println(autoModeValue+"//"+brightnessValue);
-            if (brightnessValue == 0) {
-                setTheme(R.style.AppTheme_Light);
-            } else {
-                setTheme(R.style.AppTheme_Dark);
+            if (brightnessValue == 0 && textSizeValue == 0) {
+                setTheme(R.style.AppTheme_Light_Reg);
+            } else if (brightnessValue == 0 && textSizeValue == 1) {
+                setTheme(R.style.AppTheme_Light_Large);
+            }else if (brightnessValue == 1 && textSizeValue == 0){
+                setTheme(R.style.AppTheme_Dark_Reg);
+            }else if (brightnessValue == 1 && textSizeValue == 1){
+                setTheme(R.style.AppTheme_Dark_Large);
             }
         }else if(autoModeValue == 2){
             // Apply brightness same with system
@@ -259,14 +266,22 @@ public class SettingsActivity extends AppCompatActivity {
                     & Configuration.UI_MODE_NIGHT_MASK;
             switch (currentNightMode) {
                 case Configuration.UI_MODE_NIGHT_NO:
-                    setTheme(R.style.AppTheme_Light);
+                    if(textSizeValue == 0){
+                        setTheme(R.style.AppTheme_Light_Reg);
+                    }else{
+                        setTheme(R.style.AppTheme_Light_Large);
+                    }
                     break;
                 case Configuration.UI_MODE_NIGHT_YES:
-                    setTheme(R.style.AppTheme_Dark);
+                    if(textSizeValue == 0){
+                        setTheme(R.style.AppTheme_Dark_Reg);
+                    }else{
+                        setTheme(R.style.AppTheme_Dark_Large);
+                    }
                     break;
             }
         }else{
-            // line 143 above
+            // line 130 above when using sensor mode
         }
     }
 

@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Light Theme -->
-    <style name="AppTheme.Light" parent="Theme.AppCompat.Light.NoActionBar">
+    <!-- Light Theme with regular text -->
+    <style name="AppTheme.Light.Reg" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:background">#FFFFFF</item>  //light yellow background
         <item name="android:textColor">#000000</item>  //dark text
-        <item name="android:buttonTint">#000000</item>
+<!--        <item name="android:buttonTint">#000000</item>-->
+        <item name="android:textSize">8pt</item>  //textSize
+    </style>
+    <!-- Light Theme with large text-->
+    <style name="AppTheme.Light.Large" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:background">#FFFFFF</item>  //light yellow background
+        <item name="android:textColor">#000000</item>  //dark text
+        <!--        <item name="android:buttonTint">#000000</item>-->
+        <item name="android:textSize">10pt</item>  //textSize
     </style>
 
-    <!-- Dark Theme -->
-    <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
+    <!-- Dark Theme with regular text-->
+    <style name="AppTheme.Dark.Reg" parent="Theme.AppCompat.NoActionBar">
         <item name="android:background">#393939</item>  //dark background
         <item name="android:textColor">#FFFFFF</item>  //white text
+        <item name="android:textSize">8pt</item>  //textSize
+    </style>
+    <!-- Dark Theme with large text-->
+    <style name="AppTheme.Dark.Large" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:background">#393939</item>  //dark background
+        <item name="android:textColor">#FFFFFF</item>  //white text
+        <item name="android:textSize">10pt</item>  //textSize
     </style>
 </resources>

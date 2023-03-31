@@ -163,15 +163,6 @@
                     android:text="Default" />
 
                 <RadioButton
-                    android:id="@+id/pt10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:checked="false"
-                    android:text="Small" />
-
-                <RadioButton
                     android:id="@+id/pt20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
