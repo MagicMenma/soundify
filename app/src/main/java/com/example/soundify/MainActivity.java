@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements Button.OnClickListener{
 
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
     TextView currentTime, totalTime;
     String[] songs;
     MediaPlayer mediaPlayer;
+    private int currentTheme,textSize;
 
     boolean isPlaying = false;
     boolean isPause = true;
@@ -32,9 +34,11 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
-        int currentTheme = intent.getIntExtra("CURRENT_THEME", 0);
-        applySettings(currentTheme);
-
+        currentTheme = intent.getIntExtra("CURRENT_THEME", 0);
+        textSize = intent.getIntExtra("TEXT_SIZE", 0);
+        System.out.println("current Theme: " + currentTheme);
+        System.out.println("text Size: " + textSize);
+        applySettings(currentTheme, textSize);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -105,14 +109,14 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
         }
     }
 
-    private void applySettings(int currentTheme){
-        if(currentTheme == 0){
+    private void applySettings(int currentTheme, int textSize){
+        if(currentTheme == 0 && textSize == 0){
             setTheme(R.style.AppTheme_Light_Reg);
-        }else if(currentTheme == 1){
+        }else if(currentTheme == 0 && textSize == 1){
             setTheme(R.style.AppTheme_Light_Large);
-        }else if(currentTheme == 2){
+        }else if(currentTheme == 1 && textSize == 0){
             setTheme(R.style.AppTheme_Dark_Reg);
-        }else if(currentTheme == 3){
+        }else if(currentTheme == 1 && textSize == 1){
             setTheme(R.style.AppTheme_Dark_Large);
         }
     }
@@ -129,5 +133,12 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String convertToMMSS(String duration){
+        Long millis = Long.parseLong(duration);
+        return String.format("%02d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+                TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.HOURS.toSeconds(1));
     }
 }

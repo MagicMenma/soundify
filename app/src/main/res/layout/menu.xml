@@ -2,66 +2,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<!--    <androidx.appcompat.widget.Toolbar-->
-<!--        android:id="@+id/toolbar"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="?attr/actionBarSize"-->
-<!--        android:background="?attr/colorPrimary"-->
-<!--        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-<!--        android:title="Soundify" />-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/intro"
+        android:text="SONGS"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:padding="10dp"
+        android:typeface="serif"
+        android:layout_centerHorizontal="true"/>
 
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/song_list"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_below="@id/toolbar"-->
-<!--        android:scrollbars="vertical" />-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/noSongsWarning"
+        android:text="NO SONGS FOUND"
+        android:textStyle="bold"
+        android:padding="10dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/songList"
+        android:layout_below="@+id/intro"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
 
-        <LinearLayout
+        <Button
+            android:id="@+id/moreMusic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="Explore New Music" />
 
-            <ImageButton
-                android:id="@+id/settings_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@null"
-                android:scaleType="fitCenter"
-                android:src="@raw/settings"
-                android:text="Setting" />
-
-            <Button
-                android:id="@+id/song1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/song1" />
-
-            <Button
-                android:id="@+id/song2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="song2" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/moreMusic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Explore New Music" />
-        </LinearLayout>
-
+        <ImageButton
+            android:id="@+id/settings_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            android:src="@raw/settings"
+            android:text="Setting" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -1,10 +1,14 @@
 package com.example.soundify;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -13,19 +17,23 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MenuActivity extends AppCompatActivity {
 
     private RecyclerView songList;
+    private TextView noSongsWarning;
     private ImageButton settingsButton;
 
-    int currentTheme,textSize;
+    private int currentTheme,textSize;
 
-    Button song1, song2;
+    //Button song1, song2;
     Button moreMusic;
 
     @Override
@@ -40,18 +48,24 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu);
 
-//        songList = findViewById(R.id.song_list);
-//        settingsButton = findViewById(R.id.settings_button);
-//
-//        // set up layout manager
-//        songList.setLayoutManager(new LinearLayoutManager(this));
-//
-//        // read songs' name
-//        String[] songs = getResources().getStringArray(R.array.songs);
+        songList = findViewById(R.id.songList);
+        noSongsWarning = findViewById(R.id.noSongsWarning);
 
-        // set up adapter
-//        SensorAd adapter = new SongAdapter(songs);
-//        songList.setAdapter(adapter);
+        if(checkPermission() == false){
+            requestPermission();
+            return;
+        }
+
+        String[] projection = {
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.DURATION
+        };
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
+        Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, null);
+
+
+
 
         // Set the click event of the set button to jump to settings activity
         settingsButton = findViewById(R.id.settings_button);
@@ -63,23 +77,23 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
-        song1 = findViewById(R.id.song1);
-        song1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MenuActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        song2 = findViewById(R.id.song2);
-        song2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MenuActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
+//        song1 = findViewById(R.id.song1);
+//        song1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MenuActivity.this, MainActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//
+//        song2 = findViewById(R.id.song2);
+//        song2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MenuActivity.this, MainActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         moreMusic = findViewById(R.id.moreMusic);
         moreMusic.setOnClickListener(new View.OnClickListener() {
@@ -115,4 +129,20 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
+    boolean checkPermission(){
+        int result = ContextCompat.checkSelfPermission(MenuActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if(result == PackageManager.PERMISSION_GRANTED){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    void requestPermission(){
+        if(ActivityCompat.shouldShowRequestPermissionRationale(MenuActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)){
+            Toast.makeText(MenuActivity.this, "Read Permission Is Required!", Toast.LENGTH_SHORT).show();
+        }else{
+            ActivityCompat.requestPermissions(MenuActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0001);
+        }
+    }
 }
