@@ -99,6 +99,10 @@ public class SettingsActivity extends AppCompatActivity {
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
+        nameEditText.setText(sharedPreferences.getString("USER_NAME", "User_100234"));
+        emailEditText.setText(sharedPreferences.getString("EMAIL", "soundify@gmail.com"));
+
         changeProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,12 +219,6 @@ public class SettingsActivity extends AppCompatActivity {
         autoModeWillChangeTo = sharedPreferences.getInt("autoModeChanger", 0);
         textSizeValue = sharedPreferences.getInt("textSize", 0);
 
-        if(nameEditText != null) {
-            nameEditText.setText(sharedPreferences.getString("USER_NAME", "User_100234"));
-        }
-        if(emailEditText != null) {
-            emailEditText.setText(sharedPreferences.getString("EMAIL", "soundify@gmail.com"));
-        }
 
         System.out.println("Now Mode: " + currentTheme);
 
