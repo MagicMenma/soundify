@@ -96,21 +96,39 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
 
     private void playMusic(){
         mediaPlayer.reset();
-        mediaPlayer.setDataSource(currentSong.getPath());
-        mediaPlayer.prepare();
-        mediaPlayer.s
+        try {
+            mediaPlayer.setDataSource(currentSong.getPath());
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            seekBar.setProgress(0);
+            seekBar.setMax(mediaPlayer.getDuration());
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     private void playNextSong(){
-
+        if(MyMediaPlayer.currentIndex == songsList.size()-1)
+            return;
+        MyMediaPlayer.currentIndex += 1;
+        mediaPlayer.reset();
+        setResourcesWithMusic();
     }
 
     private void playPreviousSong(){
-
+        if(MyMediaPlayer.currentIndex == 0)
+            return;
+        MyMediaPlayer.currentIndex -= 1;
+        mediaPlayer.reset();
+        setResourcesWithMusic();
     }
 
     private void pausePlay(){
-
+        if(mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }else{
+            mediaPlayer.start();
+        }
     }
 
     public static String convertToMMSS(String duration){
