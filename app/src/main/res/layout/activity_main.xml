@@ -7,6 +7,15 @@
     tools:context=".MainActivity">
 
 
+    <ImageView
+        android:id="@+id/avatorImage"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_below="@+id/songsname"
+        android:src="@raw/forsong"
+        tools:ignore="ImageContrastCheck"
+        android:layout_centerHorizontal="true"/>
+
     <TextView
         android:id="@+id/songsname"
         android:layout_width="wrap_content"
@@ -18,15 +27,6 @@
         android:textStyle="bold|italic"
         android:singleLine="true"
         android:ellipsize="marquee"/>
-
-    <ImageView
-        android:id="@+id/avatorImage"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_below="@+id/songsname"
-        android:src="@raw/forsong"
-        tools:ignore="ImageContrastCheck"
-        android:layout_centerHorizontal="true"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

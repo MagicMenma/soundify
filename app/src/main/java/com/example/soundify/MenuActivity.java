@@ -37,7 +37,6 @@ public class MenuActivity extends AppCompatActivity {
 
     private int currentTheme,textSize;
 
-    //Button song1, song2;
     Button moreMusic;
 
     @Override
@@ -93,24 +92,6 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
-//        song1 = findViewById(R.id.song1);
-//        song1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MenuActivity.this, MainActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        song2 = findViewById(R.id.song2);
-//        song2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MenuActivity.this, MainActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-
         moreMusic = findViewById(R.id.moreMusic);
         moreMusic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +100,14 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(browserIntent);
             }
         });
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(recyclerView != null){
+            recyclerView.setAdapter(new MusicListAdapter(songsList, getApplicationContext()));
+        }
     }
 
     public void retrieve (View view){

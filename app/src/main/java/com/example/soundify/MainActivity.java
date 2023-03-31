@@ -3,12 +3,15 @@ package com.example.soundify;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +29,9 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
     ArrayList<AudioModel> songsList;
     AudioModel currentSong;
     MediaPlayer mediaPlayer = MyMediaPlayer.getInstance();
+    ImageView avatorImage;
     private int currentTheme,textSize;
+    private int x = 0;
 
     boolean isPlaying = false;
     boolean isPause = true;
@@ -47,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
 
         songs = getResources().getStringArray(R.array.songs);
 
+        avatorImage = findViewById(R.id.avatorImage);
         play_button = findViewById(R.id.playButton);
         previous_button = findViewById(R.id.previousButton);
         next_button = findViewById(R.id.nextButton);
@@ -61,6 +67,44 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
         songsList = (ArrayList<AudioModel>) getIntent().getSerializableExtra("LIST");
 
         setResourcesWithMusic();
+
+        MainActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //set the current time
+                if(mediaPlayer != null){
+                    seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                    currentTime.setText(convertToMMSS(mediaPlayer.getCurrentPosition()+""));
+
+                    if(mediaPlayer.isPlaying()){
+                        avatorImage.setRotation(x++);
+                    }else{
+                        avatorImage.setRotation(0);
+                    }
+                }
+                //smooth the seek bar
+                new Handler().postDelayed(this, 100);
+            }
+        });
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(mediaPlayer != null && fromUser){
+                    mediaPlayer.seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     @Override
@@ -108,16 +152,22 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
     }
 
     private void playNextSong(){
-        if(MyMediaPlayer.currentIndex == songsList.size()-1)
+        if(MyMediaPlayer.currentIndex == songsList.size()-1){
+            Toast.makeText(this, "This Is The Last Song.", Toast.LENGTH_SHORT).show();
             return;
+        }
+        Toast.makeText(this, "Next", Toast.LENGTH_SHORT).show();
         MyMediaPlayer.currentIndex += 1;
         mediaPlayer.reset();
         setResourcesWithMusic();
     }
 
     private void playPreviousSong(){
-        if(MyMediaPlayer.currentIndex == 0)
+        if(MyMediaPlayer.currentIndex == 0){
+            Toast.makeText(this, "This Is The First Song.", Toast.LENGTH_SHORT).show();
             return;
+        }
+        Toast.makeText(this, "Previous", Toast.LENGTH_SHORT).show();
         MyMediaPlayer.currentIndex -= 1;
         mediaPlayer.reset();
         setResourcesWithMusic();
@@ -125,8 +175,10 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
 
     private void pausePlay(){
         if(mediaPlayer.isPlaying()) {
+            Toast.makeText(this, "Pause", Toast.LENGTH_SHORT).show();
             mediaPlayer.pause();
         }else{
+            Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
             mediaPlayer.start();
         }
     }
@@ -147,65 +199,4 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
     }
-
-//    @Override
-//    public void onClick(View view){
-//        if(view.getId() == R.id.playButton){
-//            isPause = !isPause;
-//            if(!isPlaying){
-//                Toast.makeText(this, R.string.play_button, Toast.LENGTH_SHORT).show();
-//                setupMusic();
-//                isPause = false;
-//                isPlaying = true;
-//                mediaPlayer.start();
-//
-//                timer++; //track time
-//            }
-//            if(isPause) {
-//                Toast.makeText(this, "Pause", Toast.LENGTH_SHORT).show();
-//                mediaPlayer.pause();
-//            }
-//
-//            if(!isPause) {
-//                mediaPlayer.start();
-//            }
-//        }
-//
-//        if(view.getId() == R.id.previousButton){
-//            System.out.println(trackNum);
-//            Toast.makeText(this, "Previous", Toast.LENGTH_SHORT).show();
-//            trackNum-=1;
-//            if(trackNum == 0) trackNum = 5;
-//            mediaPlayer.release();
-//            setupMusic();
-//            mediaPlayer.start();
-//
-//            timer = 0;  //track time
-//        }
-//        if(view.getId() == R.id.nextButton){
-//            System.out.println(trackNum);
-//            Toast.makeText(this, "Next", Toast.LENGTH_SHORT).show();
-//            trackNum+=1;
-//            if(trackNum == 5) trackNum = 1;
-//            mediaPlayer.release();
-//            setupMusic();
-//            mediaPlayer.start();
-//
-//            timer = 0;  //track time
-//        }
-//    }
-
-    //    public void setupMusic(){
-//        try {
-//            mediaPlayer = new MediaPlayer();
-//            int resID = getResources().getIdentifier(songs[trackNum-1],"raw",getPackageName());
-//            mediaPlayer.reset();
-//            //mediaPlayer.setDataSource(songs[trackNum-1]);
-//            //mediaPlayer.setDataSource(songs[i])中的songs[i] 是字符串数组中每首歌曲的名字，而非音频文件的路径
-//            mediaPlayer.setDataSource(getApplicationContext(), Uri.parse("android.resource://" + getPackageName() + "/" + resID));
-//            mediaPlayer.prepare();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
