@@ -78,7 +78,7 @@ public class MenuActivity extends AppCompatActivity {
             noSongsWarning.setVisibility(View.VISIBLE);
         }else{
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.setAdapter();
+            recyclerView.setAdapter(new MusicListAdapter(songsList, getApplicationContext()));
         }
 
 

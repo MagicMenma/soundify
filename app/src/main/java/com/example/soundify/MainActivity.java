@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements Button.OnClickListener{
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
     SeekBar seekBar;
     TextView currentTime, totalTime;
     String[] songs;
+    ArrayList<AudioModel> songsList;
     MediaPlayer mediaPlayer;
     private int currentTheme,textSize;
 
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
         seekBar = findViewById(R.id.seekBar);
         currentTime = findViewById(R.id.currentTime);
         totalTime = findViewById(R.id.totalTime);
+
+        songsList = (ArrayList<AudioModel>) getIntent().getSerializableExtra("LIST");
     }
 
     @Override
