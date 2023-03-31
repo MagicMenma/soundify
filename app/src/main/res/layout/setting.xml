@@ -32,7 +32,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/avatar"
+                android:src="@raw/avatar"
                 android:contentDescription="userProfile"
                 android:layout_marginTop="16dp"/>
 

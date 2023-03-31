@@ -28,7 +28,7 @@
             android:layout_width="365dp"
             android:layout_height="336dp"
             android:layout_below="@+id/songsname"
-            android:src="@drawable/avatar"
+            android:src="@raw/avatar"
             tools:ignore="ImageContrastCheck"
             android:layout_centerHorizontal="true"/>
 
