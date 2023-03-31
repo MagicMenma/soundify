@@ -42,7 +42,7 @@ import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private static final int ACESS_CODE = 0002;
+    private static final int ACCESS_CODE = 0002;
     private static final int IMAGE_CAPTURE_CODE = 0003;
     private int brightnessValue = 0, autoModeValue = 0, autoModeWillChangeTo = -1, textSizeValue = 0;
     private ImageView profileImage;
@@ -107,7 +107,7 @@ public class SettingsActivity extends AppCompatActivity {
                     if(checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
                             checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
                         String[] permission = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                        requestPermissions(permission, ACESS_CODE);
+                        requestPermissions(permission, ACCESS_CODE);
                     }else{
                         //permission already granted
                         openCamera();
@@ -181,7 +181,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case ACESS_CODE: {
+            case ACCESS_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     openCamera();
                 } else {
@@ -215,6 +215,13 @@ public class SettingsActivity extends AppCompatActivity {
         autoModeWillChangeTo = sharedPreferences.getInt("autoModeChanger", 0);
         textSizeValue = sharedPreferences.getInt("textSize", 0);
 
+        if(nameEditText != null) {
+            nameEditText.setText(sharedPreferences.getString("USER_NAME", "User_100234"));
+        }
+        if(emailEditText != null) {
+            emailEditText.setText(sharedPreferences.getString("EMAIL", "soundify@gmail.com"));
+        }
+
         System.out.println("Now Mode: " + currentTheme);
 
         lightModeRadioButton = findViewById(R.id.lightMode);
@@ -234,6 +241,11 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         if (autoModeValue == 0) {
+            if(currentTheme == 0){
+                lightModeRadioButton.setChecked(true);
+            }else{
+                darkModeRadioButton.setChecked(true);
+            }
             noneAutoRadioButton.setChecked(true);
         } else if (autoModeValue == 1) {
             autoModeRadioButton.setChecked(true);
