@@ -25,12 +25,6 @@
                     android:text="Back"
                     android:layout_marginRight="10pt"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Settings"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
             </LinearLayout>
 
             <ImageView
@@ -95,8 +89,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Light Mode"
-                    android:checked="false" />
+                    android:checked="true"
+                    android:text="Light Mode" />
 
                 <RadioButton
                     android:id="@+id/darkMode"
@@ -121,8 +115,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="None"
-                    android:checked="false" />
+                    android:checked="true"
+                    android:text="None" />
 
                 <RadioButton
                     android:id="@+id/autoMode"
@@ -147,18 +141,52 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Display"
+                android:text="Text Display"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             //
 
+            <RadioGroup
+                android:id="@+id/textSizeRadiogroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/pt15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="Default" />
+
+                <RadioButton
+                    android:id="@+id/pt10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:checked="false"
+                    android:text="Small" />
+
+                <RadioButton
+                    android:id="@+id/pt20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:checked="false"
+                    android:text="Large" />
+            </RadioGroup>
+
             <Button
                 android:id="@+id/save_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Save"
-                android:layout_marginTop="30dp" />
+                android:layout_marginTop="30dp"
+                android:text="Save" />
 
         </LinearLayout>
     </ScrollView>

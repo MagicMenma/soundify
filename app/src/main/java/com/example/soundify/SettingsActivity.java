@@ -37,7 +37,7 @@ import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private int brightnessValue = 0, autoModeValue = 0;
+    private int brightnessValue = 0, autoModeValue = 0, textSizeValue = 0;
     private ImageView profileImage;
     private Button changeProfileButton;
     private EditText nameEditText;
@@ -46,6 +46,8 @@ public class SettingsActivity extends AppCompatActivity {
     RadioButton lightModeRadioButton, darkModeRadioButton;
     private RadioGroup autoRadioGroup;
     RadioButton noneAutoRadioButton, autoModeRadioButton, sameWithSystemRadioButton;
+    private RadioGroup textSizeRadioGroup;
+    RadioButton regularSizeRadioButton, smallSizeRadioButton, largeSizeRadioButton;
     private Button backButton;
     private Button saveButton;
     private String mCurrentPhotoPath;
@@ -54,6 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String SHARED_PREFS = "sharedPrefs";
     private static final String BRIGHTNESS_KEY = "brightness";
     private static final String AUTO_MODE_KEY = "autoMode";
+    private static final String TEXT_SIZE_KEY = "textSize";
 
     private boolean noneAuto, autoMode, sameWithSystem;
 
@@ -69,7 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.setting);
         brightnessRadioGroup = findViewById(R.id.brightness_radiogroup);
         autoRadioGroup = findViewById(R.id.autoRadiogroup);
-        autoRadioGroup.setOnCheckedChangeListener(autoRadioGroupListener);
+        textSizeRadioGroup = findViewById(R.id.textSizeRadiogroup);
 
         loadSettings();
 
@@ -118,80 +121,45 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 saveSettings();
 
-//                String userName = nameEditText.getText().toString();
-//                String email = emailEditText.getText().toString();
-//                Boolean lightMode = lightModeRadioButton.isChecked();
-//                Boolean brightnessSwitchState = automaticSwitch.isChecked();
-//
-//                Intent intent = new Intent(SettingsActivity.this, MenuActivity.class);
-//                intent.putExtra("USER_NAME", userName);
-//                intent.putExtra("EMAIL", email);
-//                intent.putExtra("LIGHT_MODE", lightMode);
-//                intent.putExtra("BSS", brightnessSwitchState);
-//
-//                startActivity(intent);
-
+                Intent intent = new Intent(SettingsActivity.this, MenuActivity.class);
+                startActivity(intent);
             }
         });
 
-        // Apply brightness by using light sensor
-//        sensorManager.registerListener(new SensorEventListener() {
-//            @Override
-//            public void onSensorChanged(SensorEvent event) {
-//                System.out.println("Light Sensor:" + event.values[0]);
-//                if(autoModeRadioButton.isChecked()) {
-//                    float light = event.values[0];
-//                    if (light < 100) {
-//                        // If the current brightness is less than 10, switch to dark mode
-//                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-//                        recreate(); // recreate the Activity to apply new theme
-//                    } else {
-//                        // Else light mode
-//                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-//                        recreate(); // recreate the Activity to apply new theme
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-//            }
-//        }, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    RadioGroup.OnCheckedChangeListener autoRadioGroupListener = new RadioGroup.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedId) {
-            Log.d("RadioGroupListener", "someChanged");
-            switch (checkedId){
-                case R.id.noneAuto:
-                    noneAuto = true;
-                    autoMode = false;
-                    sameWithSystem = false;
-                    break;
-                case R.id.autoMode:
-                    noneAuto = false;
-                    autoMode = true;
-                    sameWithSystem = false;
-                    break;
-                case R.id.sameWithSystem:
-                    noneAuto = false;
-                    autoMode = false;
-                    sameWithSystem = true;
-                    break;
+        //Apply brightness by using light sensor
+        sensorManager.registerListener(new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                System.out.println("Light Sensor:" + event.values[0]);
+                if(autoModeRadioButton.isChecked()) {
+                    float light = event.values[0];
+                    if (light < 100) {
+                        // If the current brightness is less than 10, switch to dark mode
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                        recreate(); // recreate the Activity to apply new theme
+                    } else {
+                        // Else light mode
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        recreate(); // recreate the Activity to apply new theme
+                    }
+                }
             }
-            Log.d("RadioGroupListener", getResources().getResourceName(checkedId));
-        }
-    };
 
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            }
+        }, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
 
     private void loadSettings() {
         SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
-        brightnessValue = sharedPreferences.getInt("brightness", 3);
-        autoModeValue = sharedPreferences.getInt("autoMode", 4);
+        brightnessValue = sharedPreferences.getInt("brightness", 0);
+        autoModeValue = sharedPreferences.getInt("autoMode", 0);
+        textSizeValue = sharedPreferences.getInt("textSize", 0);
 
         System.out.println("Load brightnessValue as " + brightnessValue);
         System.out.println("Load autoModeValue as " + autoModeValue);
+        System.out.println("Load autoModeValue as " + textSizeValue);
 
         lightModeRadioButton = findViewById(R.id.lightMode);
         darkModeRadioButton = findViewById(R.id.darkMode);
@@ -199,6 +167,10 @@ public class SettingsActivity extends AppCompatActivity {
         noneAutoRadioButton = findViewById(R.id.noneAuto);
         autoModeRadioButton = findViewById(R.id.autoMode);
         sameWithSystemRadioButton = findViewById(R.id.sameWithSystem);
+
+        regularSizeRadioButton = findViewById(R.id.pt15);
+        smallSizeRadioButton = findViewById(R.id.pt10);
+        largeSizeRadioButton = findViewById(R.id.pt20);
 
         if (brightnessValue == 0) {
             lightModeRadioButton.setChecked(true);
@@ -212,6 +184,14 @@ public class SettingsActivity extends AppCompatActivity {
             autoModeRadioButton.setChecked(true);
         } else {
             sameWithSystemRadioButton.setChecked(true);
+        }
+
+        if (textSizeValue == 0) {
+            regularSizeRadioButton.setChecked(true);
+        } else if (textSizeValue == 1) {
+            smallSizeRadioButton.setChecked(true);
+        } else {
+            largeSizeRadioButton.setChecked(true);
         }
     }
 
@@ -235,10 +215,19 @@ public class SettingsActivity extends AppCompatActivity {
             autoModeValue = 2;
         }
 
+        if(regularSizeRadioButton.isChecked()){
+            textSizeValue = 0;
+        } else if (smallSizeRadioButton.isChecked()) {
+            textSizeValue = 1;
+        } else if (largeSizeRadioButton.isChecked()) {
+            textSizeValue = 2;
+        }
+
         // Save selected radio buttons
         SharedPreferences sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("brightness", brightnessValue);
+        editor.putInt("autoMode", autoModeValue);
         editor.putInt("autoMode", autoModeValue);
         editor.putString("USER_NAME", nameEditText.getText().toString());
         editor.putString("EMAIL", emailEditText.getText().toString());
