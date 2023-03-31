@@ -124,8 +124,9 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 saveSettings();
 
-//                Intent intent = new Intent(SettingsActivity.this, MenuActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(SettingsActivity.this, MenuActivity.class);
+                intent.putExtra("CURRENT_THEME", currentTheme);
+                startActivity(intent);
             }
         });
 
@@ -249,9 +250,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void applySettings(int brightnessValue, int autoModeValue, int textSizeValue) {
         // Apply auto mode
-//        System.out.println("autoModeValue"+autoModeValue);
-//        System.out.println("brightnessValue" + brightnessValue);
-//        System.out.println("textSizeValue" + textSizeValue);
         if(autoModeValue == 0) {
             // Apply brightness setting directly
             if (brightnessValue == 0 && textSizeValue == 0) {
@@ -337,9 +335,5 @@ public class SettingsActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
             profileImage.setImageBitmap(bitmap);
         }
-    }
-
-    protected void onPause(){
-        super.onPause();
     }
 }

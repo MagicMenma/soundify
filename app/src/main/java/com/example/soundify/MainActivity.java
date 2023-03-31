@@ -2,6 +2,7 @@ package com.example.soundify;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +27,10 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
     //    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        int currentTheme = intent.getIntExtra("CURRENT_THEME", 0);
+        applySettings(currentTheme);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -89,6 +94,18 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
             mediaPlayer.start();
 
             timer = 0;  //track time
+        }
+    }
+
+    private void applySettings(int currentTheme){
+        if(currentTheme == 0){
+            setTheme(R.style.AppTheme_Light_Reg);
+        }else if(currentTheme == 1){
+            setTheme(R.style.AppTheme_Light_Large);
+        }else if(currentTheme == 2){
+            setTheme(R.style.AppTheme_Dark_Reg);
+        }else if(currentTheme == 3){
+            setTheme(R.style.AppTheme_Dark_Large);
         }
     }
 
