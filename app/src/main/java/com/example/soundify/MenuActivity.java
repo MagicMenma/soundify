@@ -23,11 +23,20 @@ public class MenuActivity extends AppCompatActivity {
     private RecyclerView songList;
     private ImageButton settingsButton;
 
+    int currentTheme,textSize;
+
     Button song1, song2;
     Button moreMusic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        currentTheme = intent.getIntExtra("CURRENT_THEME", 0);
+        textSize = intent.getIntExtra("TEXT_SIZE", 0);
+        System.out.println("current Theme: " + currentTheme);
+        System.out.println("text Size: " + textSize);
+        applySettings(currentTheme, textSize);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu);
 
@@ -91,6 +100,18 @@ public class MenuActivity extends AppCompatActivity {
 
         }else{
 
+        }
+    }
+
+    private void applySettings(int currentTheme, int textSize){
+        if(currentTheme == 0 && textSize == 0){
+            setTheme(R.style.AppTheme_Light_Reg);
+        }else if(currentTheme == 0 && textSize == 1){
+            setTheme(R.style.AppTheme_Light_Large);
+        }else if(currentTheme == 1 && textSize == 0){
+            setTheme(R.style.AppTheme_Dark_Reg);
+        }else if(currentTheme == 1 && textSize == 1){
+            setTheme(R.style.AppTheme_Dark_Large);
         }
     }
 

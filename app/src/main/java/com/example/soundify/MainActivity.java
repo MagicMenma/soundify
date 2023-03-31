@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -16,6 +18,8 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity implements Button.OnClickListener{
 
     ImageButton play_button, previous_button, next_button;
+    SeekBar seekBar;
+    TextView currentTime, totalTime;
     String[] songs;
     MediaPlayer mediaPlayer;
 
@@ -36,12 +40,16 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
 
         songs = getResources().getStringArray(R.array.songs);
 
-        play_button = findViewById(R.id.play_button);
-        previous_button = findViewById(R.id.previous_button);
-        next_button = findViewById(R.id.next_button);
+        play_button = findViewById(R.id.playButton);
+        previous_button = findViewById(R.id.previousButton);
+        next_button = findViewById(R.id.nextButton);
         play_button.setOnClickListener(this);
         previous_button.setOnClickListener(this);
         next_button.setOnClickListener(this);
+
+        seekBar = findViewById(R.id.seekBar);
+        currentTime = findViewById(R.id.currentTime);
+        totalTime = findViewById(R.id.totalTime);
     }
 
     @Override
@@ -52,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
 
     @Override
     public void onClick(View view){
-        if(view.getId() == R.id.play_button){
+        if(view.getId() == R.id.playButton){
             isPause = !isPause;
             if(!isPlaying){
                 Toast.makeText(this, R.string.play_button, Toast.LENGTH_SHORT).show();
@@ -73,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
             }
         }
 
-        if(view.getId() == R.id.previous_button){
+        if(view.getId() == R.id.previousButton){
             System.out.println(trackNum);
             Toast.makeText(this, "Previous", Toast.LENGTH_SHORT).show();
             trackNum-=1;
@@ -84,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
 
             timer = 0;  //track time
         }
-        if(view.getId() == R.id.next_button){
+        if(view.getId() == R.id.nextButton){
             System.out.println(trackNum);
             Toast.makeText(this, "Next", Toast.LENGTH_SHORT).show();
             trackNum+=1;

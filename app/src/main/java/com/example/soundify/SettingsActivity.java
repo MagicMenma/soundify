@@ -126,6 +126,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(SettingsActivity.this, MenuActivity.class);
                 intent.putExtra("CURRENT_THEME", currentTheme);
+                intent.putExtra("TEXT_SIZE", textSizeValue);
                 startActivity(intent);
             }
         });
@@ -266,7 +267,6 @@ public class SettingsActivity extends AppCompatActivity {
                 currentTheme = 1;
             }
         }else if(autoModeValue == 1){
-            System.out.println("done" + autoModeWillChangeTo);
             if (autoModeWillChangeTo == 0 && textSizeValue == 0){
                 setTheme(R.style.AppTheme_Light_Reg);
                 currentTheme = 0;
@@ -276,7 +276,6 @@ public class SettingsActivity extends AppCompatActivity {
                 currentTheme = 0;
                 autoModeWillChangeTo = -1;
             } else if (autoModeWillChangeTo == 1 && textSizeValue == 0) {
-                System.out.println("done" + autoModeWillChangeTo);
                 setTheme(R.style.AppTheme_Dark_Reg);
                 currentTheme = 1;
                 autoModeWillChangeTo = -1;
