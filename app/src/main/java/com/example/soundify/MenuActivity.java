@@ -25,10 +25,14 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
+import java.util.ArrayList;
+
 public class MenuActivity extends AppCompatActivity {
 
-    private RecyclerView songList;
+    private RecyclerView recyclerView;
     private TextView noSongsWarning;
+    ArrayList<AudioModel> songsList = new ArrayList<>();
     private ImageButton settingsButton;
 
     private int currentTheme,textSize;
@@ -48,7 +52,7 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu);
 
-        songList = findViewById(R.id.songList);
+        recyclerView = findViewById(R.id.songList);
         noSongsWarning = findViewById(R.id.noSongsWarning);
 
         if(checkPermission() == false){
@@ -63,7 +67,19 @@ public class MenuActivity extends AppCompatActivity {
         };
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
         Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, null);
+        while (cursor.moveToNext()){
+            AudioModel songData = new AudioModel(cursor.getString(1), cursor.getString(0), cursor.getString(2));
+            if(new File(songData.getPath()).exists()) {
+                songsList.add(songData);
+            }
+        }
 
+        if(songsList.size() == 0){
+            noSongsWarning.setVisibility(View.VISIBLE);
+        }else{
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter();
+        }
 
 
 
