@@ -13,20 +13,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/backButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Back"
-                    android:layout_marginRight="10pt"/>
-
-            </LinearLayout>
-
             <ImageView
                 android:id="@+id/profile_image"
                 android:layout_width="150dp"
@@ -41,8 +27,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Change Profile Picture"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="16dp"
+                android:text="Change Profile Picture" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -90,7 +76,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:checked="true"
-                    android:text="Light Mode" />
+                    android:text="Light Mode"
+                    android:visibility="visible"/>
 
                 <RadioButton
                     android:id="@+id/darkMode"
@@ -99,14 +86,15 @@
                     android:layout_weight="1"
                     android:text="Dark Mode"
                     android:checked="false"
-                    android:layout_marginStart="16dp"/>
+                    android:layout_marginStart="16dp"
+                    android:visibility="visible"/>
             </RadioGroup>
 
             <RadioGroup
                 android:id="@+id/autoRadiogroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_gravity="center"
                 >
 
@@ -114,27 +102,24 @@
                     android:id="@+id/noneAuto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:checked="true"
-                    android:text="None" />
+                    android:text="Manually" />
 
                 <RadioButton
                     android:id="@+id/autoMode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="Auto"
                     android:checked="false"
-                    android:layout_marginStart="16dp"/>
+                    android:layout_marginStart="0dp"/>
 
                 <RadioButton
                     android:id="@+id/sameWithSystem"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="Same With System"
                     android:checked="false"
-                    android:layout_marginStart="16dp"/>
+                    android:layout_marginStart="0dp" />
             </RadioGroup>
 
             <TextView
@@ -172,12 +157,26 @@
                     android:text="Large" />
             </RadioGroup>
 
-            <Button
-                android:id="@+id/save_button"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="Save" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="30dp">
+
+                <Button
+                    android:id="@+id/backButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Back" />
+
+                <Button
+                    android:id="@+id/save_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Save" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

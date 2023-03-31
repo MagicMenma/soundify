@@ -1,11 +1,15 @@
 package com.example.soundify;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.FileProvider;
 
+import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +19,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -37,6 +42,8 @@ import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private static final int ACESS_CODE = 0002;
+    private static final int IMAGE_CAPTURE_CODE = 0003;
     private int brightnessValue = 0, autoModeValue = 0, autoModeWillChangeTo = -1, textSizeValue = 0;
     private ImageView profileImage;
     private Button changeProfileButton;
@@ -61,6 +68,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SensorManager sensorManager;
     private Sensor lightSensor;
+
+    Uri image_uri;
 
 
 
@@ -93,19 +102,15 @@ public class SettingsActivity extends AppCompatActivity {
         changeProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-                    File photoFile = null;
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException ex) {
-                    }
-
-                    if (photoFile != null) {
-                        Uri photoUri = FileProvider.getUriForFile(SettingsActivity.this, "com.example.android.fileprovider", photoFile);
-                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                        startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    //check the permission
+                    if(checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
+                            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+                        String[] permission = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                        requestPermissions(permission, ACESS_CODE);
+                    }else{
+                        //permission already granted
+                        openCamera();
                     }
                 }
             }
@@ -115,6 +120,8 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SettingsActivity.this, MenuActivity.class);
+                intent.putExtra("CURRENT_THEME", currentTheme);
+                intent.putExtra("TEXT_SIZE", textSizeValue);
                 startActivity(intent);
             }
         });
@@ -123,11 +130,6 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveSettings();
-
-                Intent intent = new Intent(SettingsActivity.this, MenuActivity.class);
-                intent.putExtra("CURRENT_THEME", currentTheme);
-                intent.putExtra("TEXT_SIZE", textSizeValue);
-                startActivity(intent);
             }
         });
 
@@ -161,6 +163,42 @@ public class SettingsActivity extends AppCompatActivity {
             public void onAccuracyChanged(Sensor sensor, int accuracy) {
             }
         }, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    private void openCamera() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
+        image_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        //Camera intent
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
+        startActivityForResult(cameraIntent, IMAGE_CAPTURE_CODE);
+    }
+
+    //handle permission result
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case ACESS_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openCamera();
+                } else {
+                    Toast.makeText(this, "Permission Denied.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //called when image was captured from camera
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            //set the image capture to ImageView
+            profileImage.setImageURI(image_uri);
+        }
     }
 
     private void preLoadSettings(){
@@ -199,8 +237,12 @@ public class SettingsActivity extends AppCompatActivity {
             noneAutoRadioButton.setChecked(true);
         } else if (autoModeValue == 1) {
             autoModeRadioButton.setChecked(true);
+            lightModeRadioButton.setChecked(false);
+            darkModeRadioButton.setChecked(false);
         } else {
             sameWithSystemRadioButton.setChecked(true);
+            lightModeRadioButton.setChecked(false);
+            darkModeRadioButton.setChecked(false);
         }
 
         if (textSizeValue == 0) {
@@ -310,29 +352,5 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    private File createImageFile() throws IOException {
-        // create a name for the image file
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
 
-        // Save the file path for later use
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            // Load a photo from a file and set it as an avatar
-            Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
-            profileImage.setImageBitmap(bitmap);
-        }
-    }
 }
